@@ -10,9 +10,10 @@ if not logger.handlers:
     )
 
     stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.stream = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
     stream_handler.setFormatter(formatter)
 
-    file_handler = logging.FileHandler("pipeline.log")
+    file_handler = logging.FileHandler("pipeline.log", encoding="utf-8")
     file_handler.setFormatter(formatter)
 
     logger.addHandler(stream_handler)
