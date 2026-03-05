@@ -27,7 +27,7 @@ sortorder:desc
 
 --
 
-I'm making a decision to not work with CSVs at all in this pipeline.
+I'm making a decision to not work with CSVs at all in this pipeline.  
 My pipelines will generate the necessary data for my API to serve to the frontend.  
-Any UI requirements, like serving the data in tabular format, can be met by the frontend team.  
-This allows for leaner pipelines, I believe it's the right call to make.  
+Any UI requirements, like serving the data in tabular format, should be met by the frontend team by parsing a json payload.  
+This allows for leaner pipelines, and I believe it's the right call to make.  
