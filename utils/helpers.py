@@ -5,15 +5,10 @@ Shared utilities for the NOAA pipeline.
 """
 
 import json
-import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, timedelta
 
-
-# ---------------------------------------------------------------------------
-# HTTP
-# ---------------------------------------------------------------------------
 
 def noaa_get(base_url, token, params):
     """
@@ -29,10 +24,6 @@ def noaa_get(base_url, token, params):
         return {"metadata": {}, "results": []}
     return json.loads(raw)
 
-
-# ---------------------------------------------------------------------------
-# S3
-# ---------------------------------------------------------------------------
 
 def s3_key(city_slug, d):
     """
@@ -82,10 +73,6 @@ def list_existing_dates(s3_client, bucket, city_slug, year):
     return existing
 
 
-# ---------------------------------------------------------------------------
-# Date utilities
-# ---------------------------------------------------------------------------
-
 def date_range(start, end):
     """Yield every date from start to end inclusive."""
     d = start
@@ -123,10 +110,6 @@ def dates_to_backfill(s3_client, bucket, city_slug, start, end, lookback_days):
     missing = all_dates - existing
     return missing | recent
 
-
-# ---------------------------------------------------------------------------
-# Results grouping
-# ---------------------------------------------------------------------------
 
 def group_results_by_date(results):
     """
