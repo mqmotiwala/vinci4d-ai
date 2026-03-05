@@ -1,0 +1,52 @@
+name: Deploy API Handler Lambda
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api_handler.py'
+      - '.github/workflows/deploy_lambda_function.yml'
+  workflow_dispatch:
+    inputs:
+      lambda_function_name:
+        description: 'Lambda function name (overrides repo variable API_HANDLER_LAMBDA_FUNCTION_NAME)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-west-2
+  LAMBDA_FUNCTION_NAME: ${{ inputs.lambda_function_name || vars.API_HANDLER_LAMBDA_FUNCTION_NAME }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate lambda target
+        run: |
+          if [ -z "${LAMBDA_FUNCTION_NAME}" ]; then
+            echo "::error::Lambda function name is missing. Set repo variable API_HANDLER_LAMBDA_FUNCTION_NAME or pass workflow_dispatch input lambda_function_name."
+            exit 1
+          fi
+
+      - name: Package api_handler.py
+        run: |
+          rm -f function.zip
+          zip -j function.zip api_handler.py
+
+      - name: Deploy Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name "${LAMBDA_FUNCTION_NAME}" \
+            --zip-file fileb://function.zip
