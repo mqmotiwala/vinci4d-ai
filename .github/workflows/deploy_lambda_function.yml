@@ -50,3 +50,9 @@ jobs:
           aws lambda update-function-code \
             --function-name "${LAMBDA_FUNCTION_NAME}" \
             --zip-file fileb://function.zip
+
+      - name: Update Lambda handler config
+        run: |
+          aws lambda update-function-configuration \
+            --function-name "${LAMBDA_FUNCTION_NAME}" \
+            --handler api_handler.lambda_handler
