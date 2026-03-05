@@ -1,0 +1,4 @@
+backup/*
+trades.json
+__pycache__/*
+.env
